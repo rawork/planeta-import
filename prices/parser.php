@@ -98,23 +98,23 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 		"LOGIC" => "OR"
 	);
 	if ($articul) {
-		$articulFilter[] = array("=PROPERTY_ARTNUMBER" => $articul);
-		$articulFilter[] = array("=NAME" => $articul);
+		$articulFilter[] = array("PROPERTY_ARTNUMBER.VALUE" => $articul);
+		$articulFilter[] = array("NAME" => $articul);
 	}
 
 	if ($articulNum) {
-		$articulFilter[] = array("=PROPERTY_ARTNUMBER" => $articulNum);
-		$articulFilter[] = array("=NAME" => $articulNum);
+		$articulFilter[] = array("PROPERTY_ARTNUMBER.VALUE" => $articulNum);
+		$articulFilter[] = array("NAME" => $articulNum);
 	}
 
 	if ($gtin) {
-		$articulFilter[] = array("=PROPERTY_ARTNUMBER" => $gtin);
-		$articulFilter[] = array("=NAME" => $gtin);
+		$articulFilter[] = array("PROPERTY_ARTNUMBER.VALUE" => $gtin);
+		$articulFilter[] = array("NAME" => $gtin);
 	}
 
 	if ($gtinNum) {
-		$articulFilter[] = array("=PROPERTY_ARTNUMBER" => $gtinNum);
-		$articulFilter[] = array("=NAME" => $gtinNum);
+		$articulFilter[] = array("PROPERTY_ARTNUMBER.VALUE" => $gtinNum);
+		$articulFilter[] = array("NAME" => $gtinNum);
 	}
 
 	var_dump($articulFilter, $price);
