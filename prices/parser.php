@@ -20,8 +20,7 @@ $_SERVER["DOCUMENT_ROOT"] = $siteFolder;
 $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
 define("NO_KEEP_STATISTIC", true);
 define("NOT_CHECK_PERMISSIONS", true);
-define("LANG", "ru");
-define("SITE_ID", "s1");
+define("LANG", "s1");
 
 require($_SERVER["DOCUMENT_ROOT"]. "/bitrix/modules/main/include/prolog_before.php");
 require ('src/helper.php');
@@ -31,7 +30,7 @@ CModule::IncludeModule('iblock');
 chdir ( __DIR__ );
 
 define('CURRENT_JSON', 'app/current.json');
-define('STEP_ROWS', 10);
+define('STEP_ROWS', 1000);
 define('IBLOCK_ID', 22);
 
 $current = false;
