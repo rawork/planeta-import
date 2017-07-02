@@ -130,7 +130,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 
 		// todo update price
 		$PRODUCT_ID = $arFields['ID'];
-		$PRICE_TYPE_ID = 1;
+		$PRICE_TYPE_ID = 3;
 
 		$arFields = Array(
 			"PRODUCT_ID" => $PRODUCT_ID,
