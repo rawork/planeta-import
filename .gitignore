@@ -1,0 +1,7 @@
+.idea
+composer.lock
+composer.phar
+vendor
+
+prices/upload/*
+!prices/upload/.htaccess
