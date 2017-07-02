@@ -61,7 +61,7 @@ if (file_exists(CURRENT_JSON)) {
 	);
 
 	file_put_contents(CURRENT_JSON, json_encode($current));
-	error_log("Start parse file $file at $current[started]", 3, $current['log']);
+	error_log("Start parse file $file at $current[started]\n", 3, $current['log']);
 }
 
 $pricelist = \PHPExcel_IOFactory::createReader('Excel2007');
@@ -88,8 +88,6 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 
 	$articulNum = preg_replace('/(\s|-|\.)+/' , '', $articul);
 	$gtinNum = preg_replace('/(\s|-|\.)+/' , '', $gtin);
-	echo "Articuls: $articul, $articulNum, $gtin, $gtinNum\n";
-
 	if (!$articul && !$articulNum && !$gtin && !$gtinNum) {
 		echo "Empty articuls in row $i \n";
 		continue;
@@ -127,7 +125,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	$res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>5), $arSelect);
 	if ($ob = $res->GetNextElement()) {
 		$arFields = $ob->GetFields();
-		error_log("Element $articul found", 3, $current['log']);
+		error_log("Element $articul found\n", 3, $current['log']);
 		echo "Element $articul found\n";
 
 		// todo update price
@@ -162,9 +160,9 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 //			CPrice::Add($arFields);
 		}
 	} else {
-		error_log("Element $articul not found", 3, $current['log']);
-		$current['not_found']++;
+		error_log("Element $articul not found\n", 3, $current['log']);
 		echo "Element $articul not found\n";
+		$current['not_found']++;
 	}
 
 	$current['position']++;
@@ -172,7 +170,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 }
 
 if ($fileRows <= $current['position'] ) {
-	error_log("In price $current[position] elements", 3, $current['log']);
+	error_log("In price $current[position] elements\n", 3, $current['log']);
 	unlink($current['file']);
 	unlink(CURRENT_JSON);
 
