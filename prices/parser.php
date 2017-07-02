@@ -58,6 +58,7 @@ if (file_exists(CURRENT_JSON)) {
 		'started' => date('Y-m-d_H-i'),
 		'position' => 2,
 		'log' => __DIR__ . "/app/log/log_$pathinfo[filename].log",
+		'not_found' => 0,
 	);
 
 	file_put_contents(CURRENT_JSON, json_encode($current));
@@ -99,26 +100,24 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 		"LOGIC" => "OR"
 	);
 	if ($articul) {
-		$articulFilter[] = array("PROPERTY_ARTNUMBER.VALUE" => $articul);
+		$articulFilter[] = array("PROPERTY_ARTNUMBER" => $articul);
 		$articulFilter[] = array("NAME" => $articul);
 	}
 
 	if ($articulNum) {
-		$articulFilter[] = array("PROPERTY_ARTNUMBER.VALUE" => $articulNum);
+		$articulFilter[] = array("PROPERTY_ARTNUMBER" => $articulNum);
 		$articulFilter[] = array("NAME" => $articulNum);
 	}
 
 	if ($gtin) {
-		$articulFilter[] = array("PROPERTY_ARTNUMBER.VALUE" => $gtin);
+		$articulFilter[] = array("PROPERTY_ARTNUMBER" => $gtin);
 		$articulFilter[] = array("NAME" => $gtin);
 	}
 
 	if ($gtinNum) {
-		$articulFilter[] = array("PROPERTY_ARTNUMBER.VALUE" => $gtinNum);
+		$articulFilter[] = array("PROPERTY_ARTNUMBER" => $gtinNum);
 		$articulFilter[] = array("NAME" => $gtinNum);
 	}
-
-	var_dump($articulFilter);
 
 	// Find $elementId
 	$arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_ARTNUMBER");
@@ -127,44 +126,46 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 		$articulFilter,
 	);
 	$res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>5), $arSelect);
-	while ($ob = $res->GetNextElement()) {
+	if ($ob = $res->GetNextElement()) {
 		$arFields = $ob->GetFields();
-		error_log("Found element $arFields[ID]", 3, $current['log']);
-		echo "Found element $arFields[ID]\n";
-		error_log($arFields['PROPERTY_ARTNUMBER_VALUE'], 3, $current['log']);
-		echo "Found articul $arFields[PROPERTY_ARTNUMBER_VALUE]\n";
-//		$arProps = $ob->GetProperties();
-//		error_log(serialize($arProps['PRO']), 3, $current['log']);
+		error_log("Element $articul found", 3, $current['log']);
+		echo "Element $articul found\n";
 
 		// todo update price
-//		$PRODUCT_ID = $arFields['ID'];
-//		$PRICE_TYPE_ID = 1;
-//
-//		$arFields = Array(
-//			"PRODUCT_ID" => $PRODUCT_ID,
-//			"CATALOG_GROUP_ID" => $PRICE_TYPE_ID,
-//			"PRICE" => $price,
-//			"CURRENCY" => "RUB",
-//			"QUANTITY_FROM" => 1,
-//		);
-//
-//		// обновление цены
-//		$res = CPrice::GetList(
-//			array(),
-//			array(
-//				"PRODUCT_ID" => $PRODUCT_ID,
-//				"CATALOG_GROUP_ID" => $PRICE_TYPE_ID
-//			)
-//		);
-//
-//		if ($arr = $res->Fetch())
-//		{
+		$PRODUCT_ID = $arFields['ID'];
+		$PRICE_TYPE_ID = 1;
+
+		$arFields = Array(
+			"PRODUCT_ID" => $PRODUCT_ID,
+			"CATALOG_GROUP_ID" => $PRICE_TYPE_ID,
+			"PRICE" => $price,
+			"CURRENCY" => "RUB",
+			"QUANTITY_FROM" => 1,
+		);
+
+		// обновление цены
+		$res = CPrice::GetList(
+			array(),
+			array(
+				"PRODUCT_ID" => $PRODUCT_ID,
+				"CATALOG_GROUP_ID" => $PRICE_TYPE_ID
+			)
+		);
+
+		if ($arr = $res->Fetch())
+		{
+			echo "Update\n";
 //			CPrice::Update($arr["ID"], $arFields);
-//		}
-//		else
-//		{
+		}
+		else
+		{
+			echo "Add\n";
 //			CPrice::Add($arFields);
-//		}
+		}
+	} else {
+		error_log("Element $articul not found", 3, $current['log']);
+		$current['not_found']++;
+		echo "Element $articul not found\n";
 	}
 
 	$current['position']++;
@@ -172,11 +173,11 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 }
 
 if ($fileRows <= $current['position'] ) {
-	error_log("Found $current[position] elements", 3, $current['log']);
+	error_log("In price $current[position] elements", 3, $current['log']);
 	unlink($current['file']);
 	unlink(CURRENT_JSON);
 
-	// send email with info
+	// todo send email summary, prices not found
 }
 
 echo "$current[file] - $current[position] - $current[started]\n";
