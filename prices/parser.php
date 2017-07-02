@@ -75,8 +75,10 @@ if ($fileRows < $lastPosition) {
 	$lastPosition = $fileRows;
 }
 
+echo "rows $fileRows\n";
+
 for ($i = $current['position']; $i <= $lastPosition; $i++) {
-	echo $i
+	echo "current row $i\n";
 	$brand = trim($pricelist->getActiveSheet()->getCell('A'.$i)->getValue());
 	$articul = trim($pricelist->getActiveSheet()->getCell('B'.$i)->getValue());
 	$name = trim($pricelist->getActiveSheet()->getCell('C'.$i)->getValue());
@@ -87,7 +89,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	$gtinNum = preg_replace('(\s|-|.)' , '', $gtin);
 
 	error_log("Articuls: $artucul, $articulNum, $gtin, $gtinNum", 3, $current['log']);
-	echo "Articuls: $artucul, $articulNum, $gtin, $gtinNum";
+	echo "Articuls: $artucul, $articulNum, $gtin, $gtinNum\n";
 
 	// Find $elementId
 	$arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_ARTNUMBER");
