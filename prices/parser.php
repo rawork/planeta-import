@@ -20,7 +20,8 @@ $_SERVER["DOCUMENT_ROOT"] = $siteFolder;
 $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
 define("NO_KEEP_STATISTIC", true);
 define("NOT_CHECK_PERMISSIONS", true);
-define("LANG", "s1");
+define("LANG", "ru");
+define("SITE_ID", "s1");
 
 require($_SERVER["DOCUMENT_ROOT"]. "/bitrix/modules/main/include/prolog_before.php");
 require ('src/helper.php');
@@ -117,13 +118,13 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 		$articulFilter[] = array("NAME" => $gtinNum);
 	}
 
-	var_dump($articulFilter, $price);
+	var_dump($articulFilter);
 
 	// Find $elementId
 	$arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_ARTNUMBER");
 	$arFilter = Array(
 		"IBLOCK_ID" => IBLOCK_ID,
-		"PROPERTY_ARTNUMBER" => $articulNum,
+		$articulFilter,
 	);
 	$res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>5), $arSelect);
 	while ($ob = $res->GetNextElement()) {
