@@ -79,6 +79,8 @@ echo "rows $fileRows\n";
 
 for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	echo "current row $i\n";
+	var_dump($pricelist->getActiveSheet()->getCell('B'.$i)->getValue());
+	var_dump($pricelist->getActiveSheet()->getCell('D'.$i)->getValue());
 	$brand = trim($pricelist->getActiveSheet()->getCell('A'.$i)->getValue());
 	$articul = trim($pricelist->getActiveSheet()->getCell('B'.$i)->getValue());
 	$name = trim($pricelist->getActiveSheet()->getCell('C'.$i)->getValue());
@@ -91,17 +93,35 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	error_log("Articuls: $artucul, $articulNum, $gtin, $gtinNum", 3, $current['log']);
 	echo "Articuls: $artucul, $articulNum, $gtin, $gtinNum\n";
 
+	if (!$artucul && $articulNum && $gtin && $gtinNum) {
+		echo "Empty articuls in row $i \n";
+		continue;
+	}
+
+	$articulFilter = array(
+		"LOGIC" => "OR"
+	);
+	if ($articul) {
+		$articulFilter[] = array("=PROPETY_ARTNUMBER" => $articul);
+	}
+
+	if ($articulNum) {
+		$articulFilter[] = array("=PROPETY_ARTNUMBER" => $articulNum);
+	}
+
+	if ($gtin) {
+		$articulFilter[] = array("=PROPETY_ARTNUMBER" => $gtin);
+	}
+
+	if ($gtinNum) {
+		$articulFilter[] = array("=PROPETY_ARTNUMBER" => $gtinNum);
+	}
+
 	// Find $elementId
 	$arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_ARTNUMBER");
 	$arFilter = Array(
 		"IBLOCK_ID"=>IBLOCK_ID,
-		array(
-			"LOGIC" => "OR",
-			array("=PROPETY_ARTNUMBER" => $articul),
-			array("=PROPETY_ARTNUMBER" => $articulNum),
-			array("=PROPETY_ARTNUMBER" => $gtin),
-			array("=PROPETY_ARTNUMBER" => $gtinNum),
-		),
+		$articulFilter,
 	);
 	$res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>5), $arSelect);
 	while ($ob = $res->GetNextElement()) {
@@ -109,7 +129,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 		error_log("Found element $arFields[ID]", 3, $current['log']);
 		echo "Found element $arFields[ID]\n";
 		error_log($arFields['PROPERTY_ARTNUMBER_VALUE'], 3, $current['log']);
-		echo "Fount articul $arFields[PROPERTY_ARTNUMBER_VALUE]\n";
+		echo "Found articul $arFields[PROPERTY_ARTNUMBER_VALUE]\n";
 //		$arProps = $ob->GetProperties();
 //		error_log(serialize($arProps['PRO']), 3, $current['log']);
 
