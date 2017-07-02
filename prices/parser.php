@@ -85,15 +85,15 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	$gtin = trim($pricelist->getActiveSheet()->getCell('D'.$i)->getValue());
 	$price = trim($pricelist->getActiveSheet()->getCell('E'.$i)->getValue());
 
-	$articulNum = preg_replace('(\s|-|.)+' , '', $articul);
-	$gtinNum = preg_replace('(\s|-|.)+' , '', $gtin);
+	$articulNum = preg_replace('(\s|-|\.)+' , '', $articul);
+	$gtinNum = preg_replace('(\s|-|\.)+' , '', $gtin);
 
 	var_dump($articulNum, $gtinNum);
 
 	error_log("Articuls: $articul, $articulNum, $gtin, $gtinNum", 3, $current['log']);
 	echo "Articuls: $articul, $articulNum, $gtin, $gtinNum\n";
 
-	if (!$artucul && !$articulNum && !$gtin && !$gtinNum) {
+	if (!$articul && !$articulNum && !$gtin && !$gtinNum) {
 		echo "Empty articuls in row $i \n";
 		continue;
 	}
