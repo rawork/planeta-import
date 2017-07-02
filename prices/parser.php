@@ -122,8 +122,8 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	// Find $elementId
 	$arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_ARTNUMBER");
 	$arFilter = Array(
-		"IBLOCK_ID"=>IBLOCK_ID,
-		$articulFilter,
+		"IBLOCK_ID" => IBLOCK_ID,
+		"PROPERTY_ARTNUMBER" => $articulNum,
 	);
 	$res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>5), $arSelect);
 	while ($ob = $res->GetNextElement()) {
