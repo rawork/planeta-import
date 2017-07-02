@@ -25,6 +25,7 @@ define("LANG", "s1");
 require($_SERVER["DOCUMENT_ROOT"]. "/bitrix/modules/main/include/prolog_before.php");
 require ('src/helper.php');
 $loader = require __DIR__.'/vendor/autoload.php';
+CModule::IncludeModule('iblock');
 
 chdir ( __DIR__ );
 
