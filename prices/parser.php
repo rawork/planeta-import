@@ -85,8 +85,8 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	$gtin = trim($pricelist->getActiveSheet()->getCell('D'.$i)->getValue());
 	$price = trim($pricelist->getActiveSheet()->getCell('E'.$i)->getValue());
 
-	$articulNum = preg_replace('(\s|-|\.)+' , '', $articul);
-	$gtinNum = preg_replace('(\s|-|\.)+' , '', $gtin);
+	$articulNum = preg_replace('/(\s|-|\.)+/' , '', $articul);
+	$gtinNum = preg_replace('/(\s|-|\.)+/' , '', $gtin);
 
 	var_dump($articulNum, $gtinNum);
 
@@ -102,19 +102,19 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 		"LOGIC" => "OR"
 	);
 	if ($articul) {
-		$articulFilter[] = array("PROPETY_ARTNUMBER" => $articul);
+		$articulFilter[] = array("=PROPETY_ARTNUMBER" => $articul);
 	}
 
 	if ($articulNum) {
-		$articulFilter[] = array("PROPETY_ARTNUMBER" => $articulNum);
+		$articulFilter[] = array("=PROPETY_ARTNUMBER" => $articulNum);
 	}
 
 	if ($gtin) {
-		$articulFilter[] = array("PROPETY_ARTNUMBER" => $gtin);
+		$articulFilter[] = array("=PROPETY_ARTNUMBER" => $gtin);
 	}
 
 	if ($gtinNum) {
-		$articulFilter[] = array("PROPETY_ARTNUMBER" => $gtinNum);
+		$articulFilter[] = array("=PROPETY_ARTNUMBER" => $gtinNum);
 	}
 
 	var_dump($articulFilter);
