@@ -137,7 +137,6 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 			"CATALOG_GROUP_ID" => $PRICE_TYPE_ID,
 			"PRICE" => $price,
 			"CURRENCY" => "RUB",
-			"QUANTITY_FROM" => 1,
 		);
 
 		// обновление цены
