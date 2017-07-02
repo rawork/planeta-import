@@ -28,11 +28,13 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
 $message = isset($_SESSION['message']) ? $_SESSION['message'] : '';
 unset($_SESSION['message']);
 
-//require(__DIR__. "/../../bitrix/modules/main/include/prolog_before.php");
-//global $USER;
+require(__DIR__. "/../../bitrix/modules/main/include/prolog_before.php");
+global $USER;
 
 include('src/view/header.view.php');
 
 include('src/view/uploadform.view.php');
 
 include('src/view/footer.view.php');
+
+require(__DIR__. "/../../bitrix/modules/main/include/epilog_after.php");
