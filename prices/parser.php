@@ -5,6 +5,8 @@ if (php_sapi_name() != 'cli') {
 	die('Commandline mode only accepted'."\n");
 }
 
+set_time_limit(0);
+
 //if (empty($argv[1])) {
 //	die('First argument is required (site folder name)!'."\n");
 //}
@@ -18,8 +20,7 @@ $_SERVER["DOCUMENT_ROOT"] = $siteFolder;
 $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
 define("NO_KEEP_STATISTIC", true);
 define("NOT_CHECK_PERMISSIONS", true);
-set_time_limit(0);
-define("LANG", "ru");
+define("LANG", "s1");
 
 require($_SERVER["DOCUMENT_ROOT"]. "/bitrix/modules/main/include/prolog_before.php");
 require ('src/helper.php');
