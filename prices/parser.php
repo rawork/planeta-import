@@ -152,12 +152,12 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 		if ($arr = $res->Fetch())
 		{
 			echo "Update\n";
-//			CPrice::Update($arr["ID"], $arFields);
+			CPrice::Update($arr["ID"], $arFields);
 		}
 		else
 		{
 			echo "Add\n";
-//			CPrice::Add($arFields);
+			CPrice::Add($arFields);
 		}
 	} else {
 		error_log("Element $articul not found\n", 3, $current['log']);
@@ -175,6 +175,14 @@ if ($fileRows <= $current['position'] ) {
 	unlink(CURRENT_JSON);
 
 	// todo send email summary, prices not found
+	$pathinfo = pathinfo($current['file']);
+	$count = $fileRows - 2;
+	mail('rawork@yandex,ru', "Pricelist $pathinfo[basename] parsed", "
+	Информация о результатах:
+	
+	Всего цен: $count;
+	Не найдено по артикулу и штрихкоду: $current[not_found] 
+	");
 }
 
 echo "$current[file] - $current[position] - $current[started]\n";
