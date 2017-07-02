@@ -99,21 +99,25 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	);
 	if ($articul) {
 		$articulFilter[] = array("=PROPERTY_ARTNUMBER" => $articul);
+		$articulFilter[] = array("=NAME" => $articul);
 	}
 
 	if ($articulNum) {
 		$articulFilter[] = array("=PROPERTY_ARTNUMBER" => $articulNum);
+		$articulFilter[] = array("=NAME" => $articulNum);
 	}
 
 	if ($gtin) {
 		$articulFilter[] = array("=PROPERTY_ARTNUMBER" => $gtin);
+		$articulFilter[] = array("=NAME" => $gtin);
 	}
 
 	if ($gtinNum) {
 		$articulFilter[] = array("=PROPERTY_ARTNUMBER" => $gtinNum);
+		$articulFilter[] = array("=NAME" => $gtinNum);
 	}
 
-	var_dump($articulFilter);
+	var_dump($articulFilter, $price);
 
 	// Find $elementId
 	$arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_ARTNUMBER");
