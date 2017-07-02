@@ -76,6 +76,7 @@ if ($fileRows < $lastPosition) {
 }
 
 for ($i = $current['position']; $i <= $lastPosition; $i++) {
+	echo $i
 	$brand = trim($pricelist->getActiveSheet()->getCell('A'.$i)->getValue());
 	$articul = trim($pricelist->getActiveSheet()->getCell('B'.$i)->getValue());
 	$name = trim($pricelist->getActiveSheet()->getCell('C'.$i)->getValue());
@@ -86,6 +87,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	$gtinNum = preg_replace('(\s|-|.)' , '', $gtin);
 
 	error_log("Articuls: $artucul, $articulNum, $gtin, $gtinNum", 3, $current['log']);
+	echo "Articuls: $artucul, $articulNum, $gtin, $gtinNum";
 
 	// Find $elementId
 	$arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_ARTNUMBER");
@@ -103,9 +105,11 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	while ($ob = $res->GetNextElement()) {
 		$arFields = $ob->GetFields();
 		error_log("Found element $arFields[ID]", 3, $current['log']);
-		error_log(serialize($arFields), 3, $current['log']);
-		$arProps = $ob->GetProperties();
-		error_log(serialize($arProps), 3, $current['log']);
+		echo "Found element $arFields[ID]\n";
+		error_log($arFields['PROPERTY_ARTNUMBER_VALUE'], 3, $current['log']);
+		echo "Fount articul $arFields[PROPERTY_ARTNUMBER_VALUE]\n";
+//		$arProps = $ob->GetProperties();
+//		error_log(serialize($arProps['PRO']), 3, $current['log']);
 
 		// todo update price
 //		$PRODUCT_ID = $arFields['ID'];
@@ -146,6 +150,8 @@ if ($fileRows <= $current['position'] ) {
 	error_log("Found $current[position] elements", 3, $current['log']);
 	unlink($current['file']);
 	unlink(CURRENT_JSON);
+
+	// send email with info
 }
 
 echo "$current[file] - $current[position] - $current[started]\n";
