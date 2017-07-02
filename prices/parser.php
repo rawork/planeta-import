@@ -63,7 +63,7 @@ if (file_exists(CURRENT_JSON)) {
 }
 
 $pricelist = \PHPExcel_IOFactory::createReader('Excel2007');
-$pricelist = $objPHPExcel->load($current['file']);
+$pricelist = $pricelist->load($current['file']);
 $pricelist->setActiveSheetIndex(0);
 
 
