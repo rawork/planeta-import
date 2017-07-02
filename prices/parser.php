@@ -34,11 +34,10 @@ define('IBLOCK_ID', 22);
 
 $current = false;
 if (file_exists(CURRENT_JSON)) {
-	$current = json_decode(file_get_contents(CURRENT_JSON),true);
-}
-
-if ($current && isset($current['file']) && isset($current['position'])) {
-	echo "Found current file\n";
+	$current = json_decode(file_get_contents(CURRENT_JSON), true);
+	if ($current && isset($current['file']) && isset($current['position'])) {
+		echo "Found current file\n";
+	}
 } else {
 	$files = glob('upload/*.xlsx');
 	if (!$files) {
