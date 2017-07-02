@@ -74,7 +74,7 @@ if ($fileRows < $lastPosition) {
 	$lastPosition = $fileRows;
 }
 
-for ($i = $curent['position']; $i <= $lastPosition; $i++) {
+for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	$brand = trim($pricelist->getActiveSheet()->getCell('A'.$i)->getValue());
 	$articul = trim($pricelist->getActiveSheet()->getCell('B'.$i)->getValue());
 	$name = trim($pricelist->getActiveSheet()->getCell('C'.$i)->getValue());
