@@ -79,23 +79,21 @@ echo "rows $fileRows\n";
 
 for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	echo "current row $i\n";
-	var_dump($pricelist->getActiveSheet()->getCell('B'.$i)->getValue());
-	var_dump($pricelist->getActiveSheet()->getCell('D'.$i)->getValue());
 	$brand = trim($pricelist->getActiveSheet()->getCell('A'.$i)->getValue());
 	$articul = trim($pricelist->getActiveSheet()->getCell('B'.$i)->getValue());
 	$name = trim($pricelist->getActiveSheet()->getCell('C'.$i)->getValue());
 	$gtin = trim($pricelist->getActiveSheet()->getCell('D'.$i)->getValue());
 	$price = trim($pricelist->getActiveSheet()->getCell('E'.$i)->getValue());
 
-	$articulNum = preg_replace('(\s|-|.)' , '', $articul);
-	$gtinNum = preg_replace('(\s|-|.)' , '', $gtin);
+	$articulNum = preg_replace('(\s|-|.)+' , '', $articul);
+	$gtinNum = preg_replace('(\s|-|.)+' , '', $gtin);
 
 	var_dump($articulNum, $gtinNum);
 
 	error_log("Articuls: $articul, $articulNum, $gtin, $gtinNum", 3, $current['log']);
 	echo "Articuls: $articul, $articulNum, $gtin, $gtinNum\n";
 
-	if (!$artucul && $articulNum && $gtin && $gtinNum) {
+	if (!$artucul && !$articulNum && !$gtin && !$gtinNum) {
 		echo "Empty articuls in row $i \n";
 		continue;
 	}
@@ -118,6 +116,8 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	if ($gtinNum) {
 		$articulFilter[] = array("PROPETY_ARTNUMBER" => $gtinNum);
 	}
+
+	var_dump($articulFilter);
 
 	// Find $elementId
 	$arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_ARTNUMBER");
