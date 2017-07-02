@@ -21,7 +21,7 @@ define("NOT_CHECK_PERMISSIONS", true);
 set_time_limit(0);
 define("LANG", "ru");
 
-require($_SERVER["DOCUMENT_ROOT"]. "/../../bitrix/modules/main/include/prolog_before.php");
+require($_SERVER["DOCUMENT_ROOT"]. "/bitrix/modules/main/include/prolog_before.php");
 require ('src/helper.php');
 $loader = require __DIR__.'/vendor/autoload.php';
 
@@ -146,4 +146,4 @@ if ($fileRows <= $current['position'] ) {
 
 echo "$current[file] - $current[position] - $current[started]\n";
 
-require(__DIR__. "/../../bitrix/modules/main/include/epilog_after.php");
+require($_SERVER["DOCUMENT_ROOT"]. "/bitrix/modules/main/include/epilog_after.php");
