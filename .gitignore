@@ -2,6 +2,9 @@
 composer.lock
 composer.phar
 vendor
+current.json
 
 prices/upload/*
 !prices/upload/.htaccess
+prices/app/log/*
+!prices/app/log/.gitkeep
