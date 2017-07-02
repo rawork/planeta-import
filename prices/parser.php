@@ -1,7 +1,27 @@
 #!/usr/bin/env php
 <?php
 
-require(__DIR__. "/../../bitrix/modules/main/include/prolog_before.php");
+if (php_sapi_name() != 'cli') {
+	die('Commandline mode only accepted'."\n");
+}
+
+//if (empty($argv[1])) {
+//	die('First argument is required (site folder name)!'."\n");
+//}
+
+// test host value
+$siteFolder = "/home/p/planeta27/public_html";
+//$siteFolder = $argv[1];
+
+
+$_SERVER["DOCUMENT_ROOT"] = $siteFolder;
+$DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
+define("NO_KEEP_STATISTIC", true);
+define("NOT_CHECK_PERMISSIONS", true);
+set_time_limit(0);
+define("LANG", "ru");
+
+require($_SERVER["DOCUMENT_ROOT"]. "/../../bitrix/modules/main/include/prolog_before.php");
 require ('src/helper.php');
 $loader = require __DIR__.'/vendor/autoload.php';
 
@@ -10,10 +30,6 @@ chdir ( __DIR__ );
 define('CURRENT_JSON', 'app/current.json');
 define('STEP_ROWS', 1000);
 define('IBLOCK_ID', 22);
-
-if (php_sapi_name() != 'cli') {
-    die('Commandline mode only accepted'."\n");
-}
 
 $current = false;
 if (file_exists(CURRENT_JSON)) {
