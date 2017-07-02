@@ -30,7 +30,7 @@ CModule::IncludeModule('iblock');
 chdir ( __DIR__ );
 
 define('CURRENT_JSON', 'app/current.json');
-define('STEP_ROWS', 1000);
+define('STEP_ROWS', 10);
 define('IBLOCK_ID', 22);
 
 $current = false;
@@ -85,25 +85,27 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	$artuculNum = preg_replace('(\s|-|.)' , '', $articul);
 	$gtinNum = preg_replace('(\s|-|.)' , '', $gtin);
 
+	error_log("Articuls: $artucul, $articulNum, $gtin, $gtinNum", 3, $current['log']);
+
 	// Find $elementId
-	$arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_articul");
+	$arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_ARTNUMBER");
 	$arFilter = Array(
 		"IBLOCK_ID"=>IBLOCK_ID,
 		array(
 			"LOGIC" => "OR",
-			array("=PROPETY_articul" => $articul),
-			array("=PROPETY_articul" => $articulNum),
-			array("=PROPETY_articul" => $gtin),
-			array("=PROPETY_articul" => $gtinNum),
+			array("=PROPETY_ARTNUMBER" => $articul),
+			array("=PROPETY_ARTNUMBER" => $articulNum),
+			array("=PROPETY_ARTNUMBER" => $gtin),
+			array("=PROPETY_ARTNUMBER" => $gtinNum),
 		),
 	);
 	$res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>5), $arSelect);
 	while ($ob = $res->GetNextElement()) {
 		$arFields = $ob->GetFields();
-		echo "Found element $arFields[ID]";
-		print_r($arFields);
+		error_log("Found element $arFields[ID]", 3, $current['log']);
+		error_log(serialize($arFields), 3, $current['log']);
 		$arProps = $ob->GetProperties();
-		print_r($arProps);
+		error_log(serialize($arProps), 3, $current['log']);
 
 		// todo update price
 //		$PRODUCT_ID = $arFields['ID'];
@@ -141,6 +143,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 }
 
 if ($fileRows <= $current['position'] ) {
+	error_log("Found $current[position] elements", 3, $current['log']);
 	unlink($current['file']);
 	unlink(CURRENT_JSON);
 }
