@@ -75,11 +75,11 @@ if ($fileRows < $lastPosition) {
 }
 
 for ($i = $curent['position']; $i <= $lastPosition; $i++) {
-	$brand = trim($price->getActiveSheet()->getCell('A'.$i)->getValue());
-	$articul = trim($price->getActiveSheet()->getCell('B'.$i)->getValue());
-	$name = trim($price->getActiveSheet()->getCell('C'.$i)->getValue());
-	$gtin = trim($price->getActiveSheet()->getCell('D'.$i)->getValue());
-	$price = trim($price->getActiveSheet()->getCell('E'.$i)->getValue());
+	$brand = trim($pricelist->getActiveSheet()->getCell('A'.$i)->getValue());
+	$articul = trim($pricelist->getActiveSheet()->getCell('B'.$i)->getValue());
+	$name = trim($pricelist->getActiveSheet()->getCell('C'.$i)->getValue());
+	$gtin = trim($pricelist->getActiveSheet()->getCell('D'.$i)->getValue());
+	$price = trim($pricelist->getActiveSheet()->getCell('E'.$i)->getValue());
 
 	$artuculNum = preg_replace('(\s|-|.)' , '', $articul);
 	$gtinNum = preg_replace('(\s|-|.)' , '', $gtin);
