@@ -153,10 +153,10 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	);
 	$res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>5), $arSelect);
 
-    $report->getActiveSheet()->setCellValue('A1', $brand);
-    $report->getActiveSheet()->setCellValue('B1', $articul);
-    $report->getActiveSheet()->setCellValue('C1', $name);
-    $report->getActiveSheet()->setCellValue('D1', $price);
+    $report->getActiveSheet()->setCellValue('A'.$j, $brand);
+    $report->getActiveSheet()->setCellValue('B'.$j, $articul);
+    $report->getActiveSheet()->setCellValue('C'.$j, $name);
+    $report->getActiveSheet()->setCellValue('D'.$j, $price);
 
 	if ($ob = $res->GetNextElement()) {
 		$arFields = $ob->GetFields();
@@ -194,13 +194,13 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 			CPrice::Add($arFields);
 		}
 
-        $report->getActiveSheet()->setCellValue('E1', 'Обновлено');
+        $report->getActiveSheet()->setCellValue('E'.$j, 'Обновлено');
 	} else {
 		error_log("Element $articul not found\n", 3, $current['log']);
 		echo "Element $articul not found\n";
 		$current['not_found']++;
 
-        $report->getActiveSheet()->setCellValue('E1', 'Товар не найден');
+        $report->getActiveSheet()->setCellValue('E'.$j, 'Товар не найден');
 	}
 
 	$current['position']++;
@@ -212,7 +212,7 @@ $objWriter = new \PHPExcel_Writer_Excel2007($report);
 $objWriter->save($current['report']);
 
 if ($fileRows <= $current['position'] ) {
-    $reportLink = "http://".$_SERVER['SERVER_NAME'].str_replace($siteFolder, '', $current['report']);
+    $reportLink = "http://planeta27.ru".str_replace($siteFolder, '', $current['report']);
 	error_log("In price $current[position] elements\n", 3, $current['log']);
     error_log("Report ".$reportLink, 3, $current['log']);
 	unlink($current['file']);
