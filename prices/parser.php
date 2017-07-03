@@ -212,25 +212,35 @@ $objWriter = new \PHPExcel_Writer_Excel2007($report);
 $objWriter->save($current['report']);
 
 if ($fileRows <= $current['position'] ) {
-    $reportLink = "http://planeta27.ru".str_replace($siteFolder, '', $current['report']);
-	error_log("In price $current[position] elements\n", 3, $current['log']);
-    error_log("Report ".$reportLink, 3, $current['log']);
-	unlink($current['file']);
-	unlink(CURRENT_JSON);
+    $reportLink = "http://planeta27.ru" . str_replace($siteFolder, '', $current['report']);
 
-	// todo send email summary, prices not found
-	$pathinfo = pathinfo($current['file']);
-	$count = $fileRows - 2;
-    error_log("", 3, $current['log']);
-	mail('rawork@yandex,ru', "Pricelist $pathinfo[basename] parsed", "
+    unlink($current['file']);
+    unlink(CURRENT_JSON);
+
+    // todo send email summary, prices not found
+    $pathinfo = pathinfo($current['file']);
+    $count = $fileRows - 2;
+    error_log("In price $count elements\n", 3, $current['log']);
+    error_log("Report " . $reportLink, 3, $current['log']);
+//    mail('rawork@yandex,ru', "Pricelist $pathinfo[basename] parsed", "
+//		Информация о результатах:
+//
+//		Всего цен: $count;
+//		Не найдено по артикулу и штрих-коду: $current[not_found]
+//		Отчет: $reportLink
+//    ");
+
+    $arEventFields = array(
+        "PRICE_NAME" => $pathinfo[basename],
+        "OVERVIEW" => "
 		Информация о результатах:
 		
 		Всего цен: $count;
 		Не найдено по артикулу и штрих-коду: $current[not_found]
 		Отчет: $reportLink
     ");
+    CEvent::SendImmediate("PRICE_FILE_UPDATED", "ru", $arEventFields);
 }
-
 echo "$current[file] - $current[position] - $current[started]\n";
 
 require($_SERVER["DOCUMENT_ROOT"]. "/bitrix/modules/main/include/epilog_after.php");
