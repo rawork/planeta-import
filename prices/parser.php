@@ -61,10 +61,12 @@ if (file_exists(CURRENT_JSON)) {
 		'file' => $file,
 		'started' => date('Y-m-d_H-i'),
 		'position' => 2,
-		'log' => __DIR__ . "/app/log/log_$pathinfo[filename].log",
-		'report' => __DIR__ . "/reports/report_$pathinfo[filename].xlsx",
+		'log' => __DIR__ . "/app/log/log_$pathinfo[basename].log",
+		'report' => __DIR__ . "/reports/report_$pathinfo[basename].xlsx",
 		'not_found' => 0,
 	);
+
+    unlink($current['log']);
 
 	file_put_contents(CURRENT_JSON, json_encode($current));
 
@@ -74,7 +76,7 @@ if (file_exists(CURRENT_JSON)) {
     // Set properties
 	$report->getProperties()->setCreator("Roman Alyakritskiy");
 	$report->getProperties()->setLastModifiedBy("Roman Alyakritskiy");
-	$report->getProperties()->setTitle("Kiabi Google Categories Document");
+	$report->getProperties()->setTitle("Planeta27 price update report");
 
     // Add title header
 	$report->setActiveSheetIndex(0);
@@ -100,7 +102,7 @@ $pricelist->setActiveSheetIndex(0);
 
 // todo parse 1000 rows of file
 $fileRows = $pricelist->getActiveSheet()->getHighestRow();
-$lastPosition = $current['position'] + STEP_ROWS;
+$lastPosition = $current['position'] + STEP_ROWS - ($current['position'] > 2 ? 1 : 0);
 if ($fileRows < $lastPosition) {
 	$lastPosition = $fileRows;
 }
