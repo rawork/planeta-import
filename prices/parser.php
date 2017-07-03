@@ -39,6 +39,11 @@ if (file_exists(CURRENT_JSON)) {
 	if ($current && isset($current['file']) && isset($current['position'])) {
 		echo "Found current file\n";
 	}
+
+	$report = \PHPExcel_IOFactory::createReader('Excel2007');
+	$report = $report->load($current['report']);
+	$report->setActiveSheetIndex(0);
+	$j = $report->getActiveSheet()->getHighestRow()+1;
 } else {
 	$files = glob('upload/*.xlsx');
 	if (!$files) {
@@ -57,10 +62,34 @@ if (file_exists(CURRENT_JSON)) {
 		'started' => date('Y-m-d_H-i'),
 		'position' => 2,
 		'log' => __DIR__ . "/app/log/log_$pathinfo[filename].log",
+		'report' => __DIR__ . "/reports/report_$pathinfo[filename].xlsx",
 		'not_found' => 0,
 	);
 
 	file_put_contents(CURRENT_JSON, json_encode($current));
+
+	// Create new PHPExcel object
+	$report = new \PHPExcel();
+
+    // Set properties
+	$report->getProperties()->setCreator("Roman Alyakritskiy");
+	$report->getProperties()->setLastModifiedBy("Roman Alyakritskiy");
+	$report->getProperties()->setTitle("Kiabi Google Categories Document");
+
+    // Add title header
+	$report->setActiveSheetIndex(0);
+
+	$report->getActiveSheet()->getColumnDimension('A')->setWidth(20);
+	$report->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+	$report->getActiveSheet()->getColumnDimension('C')->setWidth(70);
+	$report->getActiveSheet()->getColumnDimension('D')->setWidth(20);
+	$report->getActiveSheet()->getColumnDimension('E')->setWidth(20);
+	$report->getActiveSheet()->setCellValue('A1', 'Бренд');
+	$report->getActiveSheet()->setCellValue('B1', 'Артикул');
+	$report->getActiveSheet()->setCellValue('C1', 'Название');
+	$report->getActiveSheet()->setCellValue('D1', 'Цена');
+	$report->getActiveSheet()->setCellValue('E1', 'Статус');
+	$j = 2;
 	error_log("Start parse file $file at $current[started]\n", 3, $current['log']);
 }
 
@@ -123,6 +152,12 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 		$articulFilter,
 	);
 	$res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>5), $arSelect);
+
+    $report->getActiveSheet()->setCellValue('A1', $brand);
+    $report->getActiveSheet()->setCellValue('B1', $articul);
+    $report->getActiveSheet()->setCellValue('C1', $name);
+    $report->getActiveSheet()->setCellValue('D1', $price);
+
 	if ($ob = $res->GetNextElement()) {
 		$arFields = $ob->GetFields();
 		error_log("Element $articul found\n", 3, $current['log']);
@@ -158,30 +193,42 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 			echo "Add\n";
 			CPrice::Add($arFields);
 		}
+
+        $report->getActiveSheet()->setCellValue('E1', 'Обновлено');
 	} else {
 		error_log("Element $articul not found\n", 3, $current['log']);
 		echo "Element $articul not found\n";
 		$current['not_found']++;
+
+        $report->getActiveSheet()->setCellValue('E1', 'Товар не найден');
 	}
 
 	$current['position']++;
+	$j++;
 	file_put_contents(CURRENT_JSON, json_encode($current));
 }
 
+$objWriter = new \PHPExcel_Writer_Excel2007($report);
+$objWriter->save($current['report']);
+
 if ($fileRows <= $current['position'] ) {
+    $reportLink = "http://".$_SERVER['SERVER_NAME'].str_replace($siteFolder, '', $current['report']);
 	error_log("In price $current[position] elements\n", 3, $current['log']);
+    error_log("Report ".$reportLink, 3, $current['log']);
 	unlink($current['file']);
 	unlink(CURRENT_JSON);
 
 	// todo send email summary, prices not found
 	$pathinfo = pathinfo($current['file']);
 	$count = $fileRows - 2;
+    error_log("", 3, $current['log']);
 	mail('rawork@yandex,ru', "Pricelist $pathinfo[basename] parsed", "
-	Информация о результатах:
-	
-	Всего цен: $count;
-	Не найдено по артикулу и штрихкоду: $current[not_found] 
-	");
+		Информация о результатах:
+		
+		Всего цен: $count;
+		Не найдено по артикулу и штрих-коду: $current[not_found]
+		Отчет: $reportLink
+    ");
 }
 
 echo "$current[file] - $current[position] - $current[started]\n";

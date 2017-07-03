@@ -8,3 +8,5 @@ prices/upload/*
 !prices/upload/.htaccess
 prices/app/log/*
 !prices/app/log/.gitkeep
+prices/reports/*
+!prices/reports/.gitkeep
