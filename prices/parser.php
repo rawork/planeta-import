@@ -219,19 +219,22 @@ if ($fileRows <= $current['position'] ) {
 
     // todo send email summary, prices not found
     $pathinfo = pathinfo($current['file']);
+    $filename = $pathinfo['basename'];
     $count = $fileRows - 2;
     error_log("In price $count elements\n", 3, $current['log']);
     error_log("Report " . $reportLink, 3, $current['log']);
-//    mail('rawork@yandex,ru', "Pricelist $pathinfo[basename] parsed", "
-//		Информация о результатах:
-//
-//		Всего цен: $count;
-//		Не найдено по артикулу и штрих-коду: $current[not_found]
-//		Отчет: $reportLink
-//    ");
+    $res = mail('rawork@yandex,ru', "Pricelist $filename parsed", "
+		Информация о результатах:
+
+		Всего цен: $count;
+		Не найдено по артикулу и штрих-коду: $current[not_found]
+		Отчет: $reportLink
+    ");
+
+    var_dump($res);
 
     $arEventFields = array(
-        "PRICE_NAME" => $pathinfo[basename],
+        "PRICE_NAME" => $filename,
         "OVERVIEW" => "
 		Информация о результатах:
 		
