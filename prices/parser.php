@@ -61,8 +61,8 @@ if (file_exists(CURRENT_JSON)) {
 		'file' => $file,
 		'started' => date('Y-m-d_H-i'),
 		'position' => 2,
-		'log' => __DIR__ . "/app/log/log_$pathinfo[basename].log",
-		'report' => __DIR__ . "/reports/report_$pathinfo[basename].xlsx",
+		'log' => __DIR__ . "/app/log/log_$pathinfo[filename].log",
+		'report' => __DIR__ . "/reports/report_$pathinfo[filename].xlsx",
 		'not_found' => 0,
 	);
 
