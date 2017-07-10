@@ -12,7 +12,8 @@ set_time_limit(0);
 //}
 
 // test host value
-$siteFolder = "/home/p/planeta27/public_html";
+//$siteFolder = "/home/p/planeta27/public_html";
+$siteFolder = __DIR__ . '/../..';
 //$siteFolder = $argv[1];
 
 
@@ -95,6 +96,8 @@ if (file_exists(CURRENT_JSON)) {
 	error_log("Start parse file $file at $current[started]\n", 3, $current['log']);
 }
 
+echo "$current[file] - $current[position] - $current[started] - start\n";
+
 $pricelist = \PHPExcel_IOFactory::createReader('Excel2007');
 $pricelist = $pricelist->load($current['file']);
 $pricelist->setActiveSheetIndex(0);
@@ -103,14 +106,15 @@ $pricelist->setActiveSheetIndex(0);
 // todo parse 1000 rows of file
 $fileRows = $pricelist->getActiveSheet()->getHighestRow();
 $lastPosition = $current['position'] + STEP_ROWS - ($current['position'] > 2 ? 1 : 0);
-if ($fileRows < $lastPosition) {
+if ($fileRows <= $lastPosition) {
 	$lastPosition = $fileRows;
 }
 
-echo "rows $fileRows\n";
+echo "Total rows $fileRows\n";
+error_log("Total rows $fileRows\n", 3, $current['log']);
 
 for ($i = $current['position']; $i <= $lastPosition; $i++) {
-	echo "current row $i\n";
+	echo "current row $i : ";
 	$brand = trim($pricelist->getActiveSheet()->getCell('A'.$i)->getValue());
 	$articul = trim($pricelist->getActiveSheet()->getCell('B'.$i)->getValue());
 	$name = trim($pricelist->getActiveSheet()->getCell('C'.$i)->getValue());
@@ -121,6 +125,9 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	$gtinNum = preg_replace('/(\s|-|\.)+/' , '', $gtin);
 	if (!$articul && !$articulNum && !$gtin && !$gtinNum) {
 		echo "Empty articuls in row $i \n";
+        $current['position']++;
+        $j++;
+        file_put_contents(CURRENT_JSON, json_encode($current));
 		continue;
 	}
 
@@ -163,7 +170,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	if ($ob = $res->GetNextElement()) {
 		$arFields = $ob->GetFields();
 		error_log("Element $articul found\n", 3, $current['log']);
-		echo "Element $articul found\n";
+		echo "Element $articul found - ";
 
 		// todo update price
 		$PRODUCT_ID = $arFields['ID'];
@@ -216,7 +223,7 @@ $objWriter->save($current['report']);
 if ($fileRows <= $current['position'] ) {
     $reportLink = "http://planeta27.ru" . str_replace($siteFolder, '', $current['report']);
 
-    unlink($current['file']);
+    rename($current['file'], $current['file'].'.done');
     unlink(CURRENT_JSON);
 
     // todo send email summary, prices not found
@@ -233,8 +240,6 @@ if ($fileRows <= $current['position'] ) {
 		Отчет: $reportLink
     ");
 
-    var_dump($res);
-
     $arEventFields = array(
         "PRICE_NAME" => $filename,
         "OVERVIEW" => "
@@ -246,6 +251,6 @@ if ($fileRows <= $current['position'] ) {
     ");
     CEvent::SendImmediate("PRICE_FILE_UPDATED", "ru", $arEventFields);
 }
-echo "$current[file] - $current[position] - $current[started]\n";
+echo "$current[file] - $current[position] - $current[started] - end \n";
 
 require($_SERVER["DOCUMENT_ROOT"]. "/bitrix/modules/main/include/epilog_after.php");
