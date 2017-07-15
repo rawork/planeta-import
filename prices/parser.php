@@ -131,6 +131,8 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 		continue;
 	}
 
+    error_log("Filters: $articul $articulNum $gtin $gtinNum\n", 3, $current['log']);
+
 	$articulFilter = array(
 		"LOGIC" => "OR"
 	);
@@ -149,10 +151,10 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 		$articulFilter[] = array("NAME" => $gtin);
 	}
 
-	if ($gtinNum) {
-		$articulFilter[] = array("PROPERTY_ARTNUMBER" => $gtinNum);
-		$articulFilter[] = array("NAME" => $gtinNum);
-	}
+//	if ($gtinNum) {
+//		$articulFilter[] = array("PROPERTY_ARTNUMBER" => $gtinNum);
+//		$articulFilter[] = array("NAME" => $gtinNum);
+//	}
 
 	// Find $elementId
 	$arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_ARTNUMBER");
