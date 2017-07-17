@@ -223,6 +223,9 @@ $objWriter = new \PHPExcel_Writer_Excel2007($report);
 $objWriter->save($current['report']);
 
 if ($fileRows <= $current['position'] ) {
+
+    CIBlock::clearIblockTagCache(IBLOCK_ID);
+
     $reportLink = "http://planeta27.ru" . str_replace($siteFolder, '', $current['report']);
 
     rename($current['file'], $current['file'].'.done');
