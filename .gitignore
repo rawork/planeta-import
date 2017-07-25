@@ -10,3 +10,4 @@ prices/app/log/*
 !prices/app/log/.gitkeep
 prices/reports/*
 !prices/reports/.gitkeep
+rates/rates.log
