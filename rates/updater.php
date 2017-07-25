@@ -83,6 +83,7 @@ foreach ($currencies as $CURRENCY) {
         if (!$ar_rate = $db_rate->Fetch()) //такого курса нет, создаём курс на нынешнюю дату
         {
             echo $NEW_RATE['CURRENCY'].' new rate added'."\n";
+            error_log('New rate added: '.$NEW_RATE['CURRENCY'].' = '.$NEW_RATE['RATE']."\n", 3, $log);
             CCurrencyRates::Add($NEW_RATE);
         }
 
