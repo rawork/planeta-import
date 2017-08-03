@@ -59,7 +59,7 @@ foreach ($currencies as $CURRENCY) {
                 $NEW_RATE['CURRENCY'] = $CURRENCY;
                 $NEW_RATE['RATE_CNT'] = IntVal($arData["ValCurs"]["#"]["Valute"][$j1]["#"]["Nominal"][0]["#"]);
                 $NEW_RATE['RATE'] = DoubleVal(str_replace(",", ".",
-                    $arData["ValCurs"]["#"]["Valute"][$j1]["#"]["Value"][0]["#"]*1.02));
+                    $arData["ValCurs"]["#"]["Valute"][$j1]["#"]["Value"][0]["#"])*1.02);
                 $NEW_RATE['DATE_RATE'] = $DATE_RATE;
                 break;
             }

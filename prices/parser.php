@@ -119,7 +119,28 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	$articul = trim($pricelist->getActiveSheet()->getCell('B'.$i)->getValue());
 	$name = trim($pricelist->getActiveSheet()->getCell('C'.$i)->getValue());
 	$gtin = trim($pricelist->getActiveSheet()->getCell('D'.$i)->getValue());
-	$price = trim($pricelist->getActiveSheet()->getCell('E'.$i)->getValue());
+	$priceRUB = trim($pricelist->getActiveSheet()->getCell('E'.$i)->getValue());
+    $priceUSD = trim($pricelist->getActiveSheet()->getCell('F'.$i)->getValue());
+    $priceEUR = trim($pricelist->getActiveSheet()->getCell('G'.$i)->getValue());
+
+    if ('' != trim($priceRUB)) {
+        $price = $priceRUB;
+        $currency = 'RUB';
+    } elseif('' != trim($priceUSD)) {
+        $price = $priceUSD;
+        $currency = 'USD';
+    } else {
+        $price = $priceEUR;
+        $currency = 'EUR';
+    }
+
+    if (empty($price)) {
+        error_log("Element $articul - price not found\n", 3, $current['log']);
+        $current['position']++;
+        $j++;
+        file_put_contents(CURRENT_JSON, json_encode($current));
+        continue;
+    }
 
 	$articulNum = preg_replace('/(\s|-|\.)+/' , '', $articul);
 	$gtinNum = preg_replace('/(\s|-|\.)+/' , '', $gtin);
@@ -182,7 +203,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 			"PRODUCT_ID" => $PRODUCT_ID,
 			"CATALOG_GROUP_ID" => $PRICE_TYPE_ID,
 			"PRICE" => $price,
-			"CURRENCY" => "RUB",
+			"CURRENCY" => $currency,
 		);
 
 		// обновление цены
