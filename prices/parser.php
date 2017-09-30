@@ -158,26 +158,26 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 		"LOGIC" => "OR"
 	);
 	if ($articul) {
-		$articulFilter[] = array("PROPERTY_ARTNUMBER" => $articul);
-		$articulFilter[] = array("NAME" => $articul);
+		$articulFilter[] = array("?PROPERTY_ARTNUMBER" => $articul);
+		$articulFilter[] = array("?NAME" => $articul);
 	}
 
 	if ($articulNum) {
-		$articulFilter[] = array("PROPERTY_ARTNUMBER" => $articulNum);
-		$articulFilter[] = array("NAME" => $articulNum);
+		$articulFilter[] = array("?PROPERTY_ARTNUMBER" => $articulNum);
+		$articulFilter[] = array("?NAME" => $articulNum);
 	}
 
 	if ($gtin) {
-		$articulFilter[] = array("PROPERTY_ARTNUMBER" => $gtin);
-		$articulFilter[] = array("NAME" => $gtin);
+		$articulFilter[] = array("?PROPERTY_ARTNUMBER" => $gtin);
+		$articulFilter[] = array("?NAME" => $gtin);
 	}
 
 	if ($gtinNum) {
-		$articulFilter[] = array("PROPERTY_ARTNUMBER" => $gtinNum);
-		$articulFilter[] = array("NAME" => $gtinNum);
+		$articulFilter[] = array("?PROPERTY_ARTNUMBER" => $gtinNum);
+		$articulFilter[] = array("?NAME" => $gtinNum);
 	}
 
-	// Find $elementId
+	// Сначала ищем элемент по наличию артикула и gtin в Названии или в поле "Артикул"
 	$arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_ARTNUMBER");
 	$arFilter = Array(
 		"IBLOCK_ID" => IBLOCK_ID,
@@ -192,14 +192,14 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 
 	if ($ob = $res->GetNextElement()) {
 		$arFields = $ob->GetFields();
-		error_log("Element $articul found\n", 3, $current['log']);
-		echo "Element $articul found - ";
+		error_log("Element $articul $gtin found\n", 3, $current['log']);
+		echo "Element $articul $gtin found - ";
 
 		// todo update price
 		$PRODUCT_ID = $arFields['ID'];
 		$PRICE_TYPE_ID = 1;
 
-		$arFields = Array(
+		$arPriceFields = Array(
 			"PRODUCT_ID" => $PRODUCT_ID,
 			"CATALOG_GROUP_ID" => $PRICE_TYPE_ID,
 			"PRICE" => $price,
@@ -217,22 +217,146 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 
 		if ($arr = $res->Fetch())
 		{
-			echo "Update\n";
-			CPrice::Update($arr["ID"], $arFields);
+            CPrice::Update($arr["ID"], $arPriceFields);
+		    echo "Price updated\n";
 		}
 		else
 		{
-			echo "Add\n";
-			CPrice::Add($arFields);
+            CPrice::Add($arPriceFields);
+		    echo "Price added\n";
 		}
 
         $report->getActiveSheet()->setCellValue('E'.$j, 'Обновлено');
-	} else {
-		error_log("Element $articul not found\n", 3, $current['log']);
-		echo "Element $articul not found\n";
-		$current['not_found']++;
 
-        $report->getActiveSheet()->setCellValue('E'.$j, 'Товар не найден');
+        // пробуем найти по артикулу и gtin в свойстве Артикул | Цена | Цвет (картинка)
+        $articulFilter = array(
+            "LOGIC" => "OR"
+        );
+        if ($articul) {
+            $articulFilter[] = array("?PROPERTY_article_price" => $articul);
+        }
+
+        if ($articulNum) {
+            $articulFilter[] = array("?PROPERTY_article_price" => $articulNum);
+        }
+
+        if ($gtin) {
+            $articulFilter[] = array("?PROPERTY_article_price" => $gtin);
+        }
+
+        if ($gtinNum) {
+            $articulFilter[] = array("?PROPERTY_article_price" => $gtinNum);
+        }
+
+        $arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_ARTNUMBER", "PROPERTY_article_price");
+        $arFilter = Array(
+            "IBLOCK_ID" => IBLOCK_ID,
+            $articulFilter,
+        );
+        $res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>5), $arSelect);
+
+        if ($ob = $res->GetNextElement()) {
+            $arFields = $ob->GetFields();
+
+            error_log("Element $articul $gtin found\n", 3, $current['log']);
+            echo "Element $articul $gtin found by article_price - ";
+
+            $PRODUCT_ID = $arFields['ID'];
+
+            // Находим все значения свойства
+            $articlePrices = array();
+            $res = CIBlockElement::GetProperty(IBLOCK_ID, $PRODUCT_ID, "sort", "asc", array("CODE" => "article_price"));
+            while ($ob = $res->GetNext()) {
+                $articlePrices[] = $ob['VALUE'];
+            }
+
+            // Обновляем PROPERTY_article_price
+            $arArticles = array();
+            foreach ($articlePrices as $articlePrice) {
+                if ($arFields['PROPERTY_ARTICLE_PRICE_VALUE'] == $articlePrice){
+                    $articlePriceArray = explode(' | ', $articlePrice);
+                    $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
+                    $arArticles[] = array("VALUE" => implode(' | ', $articlePriceArray), "DESCRIPTION" => "");
+                } else {
+                    $arArticles[] = array("VALUE" => $articlePrice, "DESCRIPTION" => "");
+                }
+            }
+
+            CIBlockElement::SetPropertyValueCode($PRODUCT_ID, 'article_price', $arArticles);
+
+            echo "Article price updated\n";
+
+        }
+	} else {
+
+	    // пробуем найти по артикулу и gtin в свойстве Артикул | Цена | Цвет (картинка)
+        $articulFilter = array(
+            "LOGIC" => "OR"
+        );
+        if ($articul) {
+            $articulFilter[] = array("?PROPERTY_article_price" => $articul);
+        }
+
+        if ($articulNum) {
+            $articulFilter[] = array("?PROPERTY_article_price" => $articulNum);
+        }
+
+        if ($gtin) {
+            $articulFilter[] = array("?PROPERTY_article_price" => $gtin);
+        }
+
+        if ($gtinNum) {
+            $articulFilter[] = array("?PROPERTY_article_price" => $gtinNum);
+        }
+
+        $arSelect = Array("ID", "IBLOCK_ID", "NAME", "DATE_ACTIVE_FROM","PROPERTY_ARTNUMBER", "PROPERTY_article_price");
+        $arFilter = Array(
+            "IBLOCK_ID" => IBLOCK_ID,
+            $articulFilter,
+        );
+        $res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>5), $arSelect);
+
+        if ($ob = $res->GetNextElement()) {
+            $arFields = $ob->GetFields();
+
+            error_log("Element $articul $gtin found\n", 3, $current['log']);
+            echo "Element $articul $gtin found by article_price - ";
+
+            $PRODUCT_ID = $arFields['ID'];
+
+            // Находим все значения свойства
+            $articlePrices = array();
+            $res = CIBlockElement::GetProperty(IBLOCK_ID, $PRODUCT_ID, "sort", "asc", array("CODE" => "article_price"));
+            while ($ob = $res->GetNext()) {
+                $articlePrices[] = $ob['VALUE'];
+            }
+
+            // Обновляем PROPERTY_article_price
+            $arArticles = array();
+            foreach ($articlePrices as $articlePrice) {
+                if ($arFields['PROPERTY_ARTICLE_PRICE_VALUE'] == $articlePrice){
+                    $articlePriceArray = explode(' | ', $articlePrice);
+                    $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
+                    $arArticles[] = array("VALUE" => implode(' | ', $articlePriceArray), "DESCRIPTION" => "");
+                } else {
+                    $arArticles[] = array("VALUE" => $articlePrice, "DESCRIPTION" => "");
+                }
+            }
+
+            CIBlockElement::SetPropertyValueCode($PRODUCT_ID, 'article_price', $arArticles);
+
+            echo "Article price updated\n";
+
+            $report->getActiveSheet()->setCellValue('E'.$j, 'Обновлено');
+
+        } else {
+            error_log("Element $articul $gtin not found\n", 3, $current['log']);
+            echo "Element $articul $gtin not found\n";
+            $current['not_found']++;
+
+            $report->getActiveSheet()->setCellValue('E'.$j, 'Товар не найден');
+        }
+
 	}
 
 	$current['position']++;
@@ -243,9 +367,9 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 $objWriter = new \PHPExcel_Writer_Excel2007($report);
 $objWriter->save($current['report']);
 
-if ($fileRows <= $current['position'] ) {
+CIBlock::clearIblockTagCache(IBLOCK_ID);
 
-    CIBlock::clearIblockTagCache(IBLOCK_ID);
+if ($fileRows <= $current['position'] ) {
 
     $reportLink = "http://planeta27.ru" . str_replace($siteFolder, '', $current['report']);
 
@@ -258,7 +382,7 @@ if ($fileRows <= $current['position'] ) {
     $count = $fileRows - 2;
     error_log("In price $count elements\n", 3, $current['log']);
     error_log("Report " . $reportLink, 3, $current['log']);
-    $res = mail('rawork@yandex,ru', "Pricelist $filename parsed", "
+    $res = mail('rawork@yandex.ru', "Pricelist $filename parsed", "
 		Информация о результатах:
 
 		Всего цен: $count;
