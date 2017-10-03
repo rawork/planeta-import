@@ -49,6 +49,8 @@ else:?>
 					</div>
 				</div>
 			</form>
+
+            <a class="btn btn-danger" href="cleaner.php">Очистка цен товаров</a>
 		</div>
 	</div>
 </div>

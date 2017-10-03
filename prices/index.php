@@ -31,6 +31,8 @@ unset($_SESSION['message']);
 require(__DIR__. "/../../bitrix/modules/main/include/prolog_before.php");
 global $USER;
 
+$title = 'Загрузка прайслистов для обновления цен в каталоге';
+
 include('src/view/header.view.php');
 
 include('src/view/uploadform.view.php');
