@@ -8,8 +8,11 @@ else:?>
 			<h1> Выберите бренды товаров,<br> для которых требуется удалить цены</h1>
 
             <?php if($message): ?><div class="alert alert-<?=$message['type']?>"><?=$message['text'] ?></div><?php endif;?>
-			<form class="form-horizontal" role="form" method="post" enctype="multipart/form-data" action="./">
-				<div class="row">
+			<form class="form-horizontal" role="form" method="post">
+                <div class="form-group">
+                    <br>
+                </div>
+                <div class="row">
                     <?
                     $arSelect = Array("ID", "NAME", "IBLOCK_ID");
                     $arFilter = Array("IBLOCK_ID"=> 21, "ACTIVE"=>"Y");

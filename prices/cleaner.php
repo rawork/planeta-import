@@ -12,13 +12,21 @@ define("LANG", "s1");
 
 require($_SERVER["DOCUMENT_ROOT"]. "/bitrix/modules/main/include/prolog_before.php");
 require ('src/helper.php');
-$loader = require __DIR__.'/vendor/autoload.php';
 CModule::IncludeModule('iblock');
 
 if ('POST' == $_SERVER['REQUEST_METHOD']) {
 
+    $brands = array();
 
-	$_SESSION['message'] = array('type' => 'success', 'text' => 'File uploaded');
+    foreach ($_POST['brands'] as $brandId) {
+        $brands[] = $brandId;
+    }
+
+    // todo найти все товары брендов и удалить им цены
+
+    var_dump($brands);
+
+	$_SESSION['message'] = array('type' => 'success', 'text' => ' Цены удалены');
 	header('location: '. $_SERVER['REQUEST_URI']);
 	exit;
 }
