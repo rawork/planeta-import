@@ -23,9 +23,33 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
     }
 
     // todo найти все товары брендов и удалить им цены
+    Cmodule::IncludeModule("catalog");
 
-    var_dump($brands);
+
+
+    $brandFilter = array(
+        "LOGIC" => "OR"
+    );
+    foreach ($brands as $brand) {
+        $brandFilter[] = array("PROPERTY_MANUFACTURER_CATALOG" => $brand);
+    }
+    $arSelect = Array("ID");
+    $arFilter = Array(
+        "IBLOCK_ID"=> 22,
+        $brandFilter,
+    );
+
+    $res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>5000), $arSelect);
+    while($ob = $res->GetNextElement())
+    {
+        $arFields = $ob->GetFields();
+        //CPrice::DeleteByProduct($arFields['ID']);
+        var_dump($arFields);
+    }
+
     die;
+
+    CIBlock::clearIblockTagCache(22);
 
 	$_SESSION['message'] = array('type' => 'success', 'text' => ' Цены удалены');
 	header('location: '. $_SERVER['REQUEST_URI']);
