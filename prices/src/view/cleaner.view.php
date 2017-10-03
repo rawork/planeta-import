@@ -23,9 +23,12 @@ else:?>
                     ?>
 
                 </div>
+                <div class="form-group">
+                    <br>
+                </div>
 				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<button type="submit" name="go" value="1" class="btn btn-default">Удалить цены</button>
+					<div class="col-xs-12">
+						<button type="submit" name="go" value="1" class="btn btn-danger btn-lg">Удалить цены</button>
 					</div>
 				</div>
 			</form>
