@@ -25,6 +25,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
     // todo найти все товары брендов и удалить им цены
 
     var_dump($brands);
+    die;
 
 	$_SESSION['message'] = array('type' => 'success', 'text' => ' Цены удалены');
 	header('location: '. $_SERVER['REQUEST_URI']);
