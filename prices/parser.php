@@ -7,10 +7,6 @@ if (php_sapi_name() != 'cli') {
 
 set_time_limit(0);
 
-//if (empty($argv[1])) {
-//	die('First argument is required (site folder name)!'."\n");
-//}
-
 // test host value
 $siteFolder = __DIR__ . '/../..';
 

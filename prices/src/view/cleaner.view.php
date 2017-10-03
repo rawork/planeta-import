@@ -18,7 +18,7 @@ else:?>
                     {
                         $arFields = $ob->GetFields();
                         ?>
-                        <div><label for="brand<?=$arFields['ID']?>"><input type="checkbox" id="brand<?=$arFields['ID']?>" name="brands[]" value="<?=$arFields['ID']?>" /> <?=$arFields['NAME']?></label></div>
+                        <div class="col-sx-3"><label for="brand<?=$arFields['ID']?>"><input type="checkbox" id="brand<?=$arFields['ID']?>" name="brands[]" value="<?=$arFields['ID']?>" /> <?=$arFields['NAME']?></label></div>
                     <?}
                     ?>
 
