@@ -5,7 +5,7 @@ else:?>
 <div class="container">
 	<div class="row">
 		<div class="col-xs-12">
-			<h1> Выберите бренды товаров, для которых требуется удалить цены</h1>
+			<h1> Выберите бренды товаров,<br> для которых требуется удалить цены</h1>
 
             <?php if($message): ?><div class="alert alert-<?=$message['type']?>"><?=$message['text'] ?></div><?php endif;?>
 			<form class="form-horizontal" role="form" method="post" enctype="multipart/form-data" action="./">
@@ -18,7 +18,7 @@ else:?>
                     {
                         $arFields = $ob->GetFields();
                         ?>
-                        <div class="col-sx-3"><label for="brand<?=$arFields['ID']?>"><input type="checkbox" id="brand<?=$arFields['ID']?>" name="brands[]" value="<?=$arFields['ID']?>" /> <?=$arFields['NAME']?></label></div>
+                        <div class="col-xs-3"><label for="brand<?=$arFields['ID']?>"><input type="checkbox" id="brand<?=$arFields['ID']?>" name="brands[]" value="<?=$arFields['ID']?>" /> <?=$arFields['NAME']?></label></div>
                     <?}
                     ?>
 
