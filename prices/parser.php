@@ -12,10 +12,7 @@ set_time_limit(0);
 //}
 
 // test host value
-//$siteFolder = "/home/p/planeta27/public_html";
 $siteFolder = __DIR__ . '/../..';
-//$siteFolder = $argv[1];
-
 
 $_SERVER["DOCUMENT_ROOT"] = $siteFolder;
 $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
