@@ -40,18 +40,17 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
     );
 
     $res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>5000), $arSelect);
+    $i = 0;
     while($ob = $res->GetNextElement())
     {
         $arFields = $ob->GetFields();
-        //CPrice::DeleteByProduct($arFields['ID']);
-        var_dump($arFields);
+        CPrice::DeleteByProduct($arFields['ID']);
+        $i++;
     }
-
-    die;
 
     CIBlock::clearIblockTagCache(22);
 
-	$_SESSION['message'] = array('type' => 'success', 'text' => ' Цены удалены');
+	$_SESSION['message'] = array('type' => 'success', 'text' => ' Цены удалены у '.$i.' товаров');
 	header('location: '. $_SERVER['REQUEST_URI']);
 	exit;
 }
