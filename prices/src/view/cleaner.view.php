@@ -10,7 +10,18 @@ else:?>
             <?php if($message): ?><div class="alert alert-<?=$message['type']?>"><?=$message['text'] ?></div><?php endif;?>
 			<form class="form-horizontal" role="form" method="post" enctype="multipart/form-data" action="./">
 				<div class="row">
-                    <div><input type="checkbox" name="brands[]" /></div>
+                    <?
+                    $arSelect = Array("ID", "NAME", "IBLOCK_ID");
+                    $arFilter = Array("IBLOCK_ID"=> 21, "ACTIVE"=>"Y");
+                    $res = CIBlockElement::GetList(Array("NAME"=>"ASC"), $arFilter, false, Array("nPageSize"=>500), $arSelect);
+                    while($ob = $res->GetNextElement())
+                    {
+                        $arFields = $ob->GetFields();
+                        ?>
+                        <div><label for="brand<?=$arFields['ID']?>"><input type="checkbox" id="brand<?=$arFields['ID']?>" name="brands[]" value="<?=$arFields['ID']?>" /> <?=$arFields['NAME']?></label></div>
+                    <?}
+                    ?>
+
                 </div>
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">
