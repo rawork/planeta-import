@@ -1,6 +1,6 @@
 <?php
 if (!$USER->IsAdmin()):
-	echo('Доступ запрещен');
+    echo('Доступ запрещен <a href="/">Авторизация</a>');
 else:?>
 <div class="container">
 	<div class="row">
