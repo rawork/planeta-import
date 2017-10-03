@@ -27,6 +27,7 @@ require($_SERVER["DOCUMENT_ROOT"]. "/bitrix/modules/main/include/prolog_before.p
 require ('src/helper.php');
 $loader = require __DIR__.'/vendor/autoload.php';
 CModule::IncludeModule('iblock');
+CModule::IncludeModule('catalog');
 
 chdir ( __DIR__ );
 
@@ -207,24 +208,10 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 		);
 
 		// обновление цены
-		$res = CPrice::GetList(
-			array(),
-			array(
-				"PRODUCT_ID" => $PRODUCT_ID,
-				"CATALOG_GROUP_ID" => $PRICE_TYPE_ID
-			)
-		);
+        CCatalogProduct::Add(array('ID' => $PRODUCT_ID));
+        CPrice::SetBasePrice($PRODUCT_ID, $price, $currency);
+        echo "Price set\n";
 
-		if ($arr = $res->Fetch())
-		{
-            CPrice::Update($arr["ID"], $arPriceFields);
-		    echo "Price updated\n";
-		}
-		else
-		{
-            CPrice::Add($arPriceFields);
-		    echo "Price added\n";
-		}
 
         $report->getActiveSheet()->setCellValue('E'.$j, 'Обновлено');
 
