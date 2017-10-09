@@ -24,6 +24,12 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
         $brands[] = $brandId;
     }
 
+    if (count($brands) == 0) {
+        $_SESSION['message'] = array('type' => 'danger', 'text' => 'Требуется выбрать хотя бы 1 бренд');
+        header('location: '. $_SERVER['REQUEST_URI']);
+        exit;
+    }
+
     // todo найти все товары брендов и удалить им цены
     Cmodule::IncludeModule("catalog");
 
