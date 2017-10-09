@@ -39,7 +39,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
     foreach ($brands as $brand) {
         $brandFilter[] = array("PROPERTY_MANUFACTURER_CATALOG" => $brand);
     }
-    $arSelect = Array("ID", "PROPERTY_article_price");
+    $arSelect = Array("ID", "IBLOCK_ID", "NAME");
     $arFilter = Array(
         "IBLOCK_ID"=> IBLOCK_ID,
         $brandFilter,
