@@ -255,9 +255,9 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
             // Обновляем PROPERTY_article_price
             $arArticles = array();
             foreach ($articlePrices as $articlePrice) {
-                error_log($arFields['PROPERTY_ARTICLE_PRICE_VALUE'].' = '.$articlePrice."\n", 3, $current['log']);
-                if ($arFields['PROPERTY_ARTICLE_PRICE_VALUE'] == $articlePrice){
-                    $articlePriceArray = explode(' | ', $articlePrice);
+                $curArticlePriceArray = explode(' | ', $arFields['PROPERTY_ARTICLE_PRICE_VALUE']);
+                $articlePriceArray = explode(' | ', $articlePrice);
+                if ($curArticlePriceArray[0] == $articlePriceArray[0]){
                     $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
                     $arArticles[] = array("VALUE" => implode(' | ', $articlePriceArray), "DESCRIPTION" => "");
                 } else {
@@ -322,9 +322,9 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
             // Обновляем PROPERTY_article_price
             $arArticles = array();
             foreach ($articlePrices as $articlePrice) {
-                error_log($arFields['PROPERTY_ARTICLE_PRICE_VALUE'].' = '.$articlePrice."\n", 3, $current['log']);
-                if ($arFields['PROPERTY_ARTICLE_PRICE_VALUE'] == $articlePrice){
-                    $articlePriceArray = explode(' | ', $articlePrice);
+                $curArticlePriceArray = explode(' | ', $arFields['PROPERTY_ARTICLE_PRICE_VALUE']);
+                $articlePriceArray = explode(' | ', $articlePrice);
+                if ($curArticlePriceArray[0] == $articlePriceArray[0]){
                     $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
                     $arArticles[] = array("VALUE" => implode(' | ', $articlePriceArray), "DESCRIPTION" => "");
                 } else {
