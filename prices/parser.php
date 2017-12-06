@@ -322,6 +322,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
             // Обновляем PROPERTY_article_price
             $arArticles = array();
             foreach ($articlePrices as $articlePrice) {
+                error_log($arFields['PROPERTY_ARTICLE_PRICE_VALUE']."\n", 3, $current['log']);
                 if ($arFields['PROPERTY_ARTICLE_PRICE_VALUE'] == $articlePrice){
                     $articlePriceArray = explode(' | ', $articlePrice);
                     $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
@@ -374,13 +375,13 @@ if ($fileRows <= $current['position'] ) {
     $count = $fileRows - 2;
     error_log("In price $count elements\n", 3, $current['log']);
     error_log("Report " . $reportLink, 3, $current['log']);
-//    $res = mail('rawork@yandex.ru', "Pricelist $filename parsed", "
-//		Информация о результатах:
-//
-//		Всего цен: $count;
-//		Не найдено по артикулу и штрих-коду: $current[not_found]
-//		Отчет: $reportLink
-//    ");
+    $res = mail('rawork@yandex.ru', "Pricelist $filename parsed", "
+Информация о результатах:
+
+Всего цен: $count;
+Не найдено по артикулу и штрих-коду: $current[not_found]
+Отчет: $reportLink
+    ");
 
     $arEventFields = array(
         "PRICE_NAME" => $filename,
