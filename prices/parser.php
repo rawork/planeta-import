@@ -201,13 +201,13 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 			"CURRENCY" => $currency,
 		);
 
-		// обновление цены
+		// обновление цены для товара-элемента инфоблока
         CCatalogProduct::Add(array('ID' => $PRODUCT_ID));
         CPrice::SetBasePrice($PRODUCT_ID, $price, $currency);
         echo "Price set\n";
 
 
-        $report->getActiveSheet()->setCellValue('E'.$j, 'Обновлено');
+        $report->getActiveSheet()->setCellValue('E'.$j, 'Обновлено в товаре');
 
         // пробуем найти по артикулу и gtin в свойстве Артикул | Цена | Цвет (картинка)
         $articulFilter = array(
@@ -236,6 +236,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
         );
         $res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>5), $arSelect);
 
+        // есть такой товар
         if ($ob = $res->GetNextElement()) {
             $arFields = $ob->GetFields();
 
@@ -254,7 +255,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
             // Обновляем PROPERTY_article_price
             $arArticles = array();
             foreach ($articlePrices as $articlePrice) {
-                error_log($arFields['PROPERTY_ARTICLE_PRICE_VALUE'], 3, $current['log']);
+                error_log($arFields['PROPERTY_ARTICLE_PRICE_VALUE']."\n", 3, $current['log']);
                 if ($arFields['PROPERTY_ARTICLE_PRICE_VALUE'] == $articlePrice){
                     $articlePriceArray = explode(' | ', $articlePrice);
                     $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
@@ -264,9 +265,14 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
                 }
             }
 
-            CIBlockElement::SetPropertyValueCode($PRODUCT_ID, 'article_price', $arArticles);
+            if (CIBlockElement::SetPropertyValueCode($PRODUCT_ID, 'article_price', $arArticles)) {
+                echo "Article price updated\n";
+            } else {
+                echo "Article price not updated cause SetPropertyValueCode returns false\n";
 
-            echo "Article price updated\n";
+                $status = $report->getActiveSheet()->getCell('E'.$j)->getValue();
+                $report->getActiveSheet()->setCellValue('E'.$j, $status.', SetPropertyValueCode:Не обновлено');
+            }
 
         }
 	} else {
@@ -325,11 +331,15 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
                 }
             }
 
-            CIBlockElement::SetPropertyValueCode($PRODUCT_ID, 'article_price', $arArticles);
+            if (CIBlockElement::SetPropertyValueCode($PRODUCT_ID, 'article_price', $arArticles)) {
+                echo "Article price updated\n";
 
-            echo "Article price updated\n";
+                $report->getActiveSheet()->setCellValue('E'.$j, 'Обновлено по доп артикулу');
+            } else {
+                echo "Article price not updated cause SetPropertyValueCode returns false\n";
 
-            $report->getActiveSheet()->setCellValue('E'.$j, 'Обновлено');
+                $report->getActiveSheet()->setCellValue('E'.$j, 'SetPropertyValueCode:Не обновлено');
+            }
 
         } else {
             error_log("Element $articul $gtin not found\n", 3, $current['log']);
@@ -353,7 +363,7 @@ CIBlock::clearIblockTagCache(IBLOCK_ID);
 
 if ($fileRows <= $current['position'] ) {
 
-    $reportLink = "http://planeta27.ru" . str_replace($DOCUMENT_ROOT, '', $current['report']);
+    $reportLink = "http://planeta27.ru" . str_replace(realpath($DOCUMENT_ROOT), '', $current['report']);
 
     rename($current['file'], $current['file'].'.done');
     unlink(CURRENT_JSON);
@@ -364,22 +374,22 @@ if ($fileRows <= $current['position'] ) {
     $count = $fileRows - 2;
     error_log("In price $count elements\n", 3, $current['log']);
     error_log("Report " . $reportLink, 3, $current['log']);
-    $res = mail('rawork@yandex.ru', "Pricelist $filename parsed", "
-		Информация о результатах:
-
-		Всего цен: $count;
-		Не найдено по артикулу и штрих-коду: $current[not_found]
-		Отчет: $reportLink
-    ");
+//    $res = mail('rawork@yandex.ru', "Pricelist $filename parsed", "
+//		Информация о результатах:
+//
+//		Всего цен: $count;
+//		Не найдено по артикулу и штрих-коду: $current[not_found]
+//		Отчет: $reportLink
+//    ");
 
     $arEventFields = array(
         "PRICE_NAME" => $filename,
         "OVERVIEW" => "
-		Информация о результатах:
-		
-		Всего цен: $count;
-		Не найдено по артикулу и штрих-коду: $current[not_found]
-		Отчет: $reportLink
+Информация о результатах:
+
+Всего цен: $count;
+Не найдено по артикулу и штрих-коду: $current[not_found]
+Отчет: $reportLink
     ");
     CEvent::SendImmediate("PRICE_FILE_UPDATED", "ru", $arEventFields);
 }
