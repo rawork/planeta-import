@@ -358,6 +358,8 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 
 	}
 
+    CIBlock::clearIblockTagCache(IBLOCK_ID);
+
 	$current['position']++;
 	$j++;
 	file_put_contents(CURRENT_JSON, json_encode($current));
@@ -365,8 +367,6 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 
 $objWriter = new \PHPExcel_Writer_Excel2007($report);
 $objWriter->save($current['report']);
-
-CIBlock::clearIblockTagCache(IBLOCK_ID);
 
 if ($fileRows <= $current['position'] ) {
 
