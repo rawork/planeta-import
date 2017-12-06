@@ -91,8 +91,6 @@ if (file_exists(CURRENT_JSON)) {
 	error_log("Start parse file $file at $current[started]\n", 3, $current['log']);
 }
 
-error_log('')
-
 echo "$current[file] - $current[position] - $current[started] - start\n";
 
 $pricelist = \PHPExcel_IOFactory::createReader('Excel2007');
