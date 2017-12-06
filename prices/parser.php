@@ -269,7 +269,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 
             error_log(print_r($arArticles, true), 3, $current['log']);
 
-            CIBlockElement::SetPropertyValuesEx($PRODUCT_ID, false, array("article_price" => $arArticles));
+            CIBlockElement::SetPropertyValues($PRODUCT_ID, IBLOCK_ID, $arArticles, "article_price");
             echo "Article price updated\n";
         }
 	} else {
@@ -331,7 +331,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 
             error_log(print_r($arArticles, true), 3, $current['log']);
 
-            CIBlockElement::SetPropertyValuesEx($PRODUCT_ID, false, array("article_price" => $arArticles));
+            CIBlockElement::SetPropertyValues($PRODUCT_ID, IBLOCK_ID, $arArticles, "article_price");
             echo "Article price updated\n";
             $report->getActiveSheet()->setCellValue('E'.$j, 'Обновлено по доп артикулу');
         } else {
