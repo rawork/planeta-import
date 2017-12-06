@@ -118,6 +118,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
     $priceUSD = trim($pricelist->getActiveSheet()->getCell('F'.$i)->getValue());
     $priceEUR = trim($pricelist->getActiveSheet()->getCell('G'.$i)->getValue());
 
+    $price = null;
     if ('' != trim($priceRUB)) {
         $price = $priceRUB;
         $currency = 'RUB';
@@ -129,6 +130,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
         $currency = 'EUR';
     }
 
+    // Если Цена не заполнена, переходим дальше
     if (empty($price)) {
         error_log("Element $articul - price not found\n", 3, $current['log']);
         $current['position']++;
@@ -240,7 +242,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
         if ($ob = $res->GetNextElement()) {
             $arFields = $ob->GetFields();
 
-            error_log("Element $articul $gtin found\n", 3, $current['log']);
+            error_log("Element $articul $gtin found by article_price\n", 3, $current['log']);
             echo "Element $articul $gtin found by article_price - ";
 
             $PRODUCT_ID = $arFields['ID'];
@@ -256,7 +258,8 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
             $arArticles = array();
             foreach ($articlePrices as $articlePrice) {
                 $articlePriceArray = explode(' | ', $articlePrice);
-                if ($articul == $articlePriceArray[0]){
+                error_log("{$articul} == {$articlePriceArray[0]} || {$gtin} == {$articlePriceArray[0]} => ".print_r($articul == $articlePriceArray[0] || $gtin == $articlePriceArray[0], true)."\n",3,$current['log']);
+                if ($articul == $articlePriceArray[0] || $gtin == $articlePriceArray[0]){
                     $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
                     $arArticles[] = array("VALUE" => implode(' | ', $articlePriceArray), "DESCRIPTION" => "");
                 } else {
@@ -306,7 +309,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
         if ($ob = $res->GetNextElement()) {
             $arFields = $ob->GetFields();
 
-            error_log("Element $articul $gtin found\n", 3, $current['log']);
+            error_log("Element $articul $gtin found by article_price\n", 3, $current['log']);
             echo "Element $articul $gtin found by article_price - ";
 
             $PRODUCT_ID = $arFields['ID'];
@@ -322,7 +325,8 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
             $arArticles = array();
             foreach ($articlePrices as $articlePrice) {
                 $articlePriceArray = explode(' | ', $articlePrice);
-                if ($articul == $articlePriceArray[0]){
+                error_log("{$articul} == {$articlePriceArray[0]} || {$gtin} == {$articlePriceArray[0]} => ".print_r($articul == $articlePriceArray[0] || $gtin == $articlePriceArray[0], true)."\n",3,$current['log']);
+                if ($articul == $articlePriceArray[0] || $gtin == $articlePriceArray[0]){
                     $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
                     $arArticles[] = array("VALUE" => implode(' | ', $articlePriceArray), "DESCRIPTION" => "");
                 } else {
