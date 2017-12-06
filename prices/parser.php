@@ -258,7 +258,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
             $arArticles = array();
             foreach ($articlePrices as $articlePrice) {
                 $articlePriceArray = explode(' | ', $articlePrice);
-                error_log("{$articul} == {$articlePriceArray[0]} || {$gtin} == {$articlePriceArray[0]} => ".print_r($articul == $articlePriceArray[0] || $gtin == $articlePriceArray[0], true)."\n",3,$current['log']);
+                //error_log("{$articul} == {$articlePriceArray[0]} || {$gtin} == {$articlePriceArray[0]} => ".print_r($articul == $articlePriceArray[0] || $gtin == $articlePriceArray[0], true)."\n",3,$current['log']);
                 if ($articul == $articlePriceArray[0] || $gtin == $articlePriceArray[0]){
                     $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
                     $arArticles[] = array("VALUE" => implode(' | ', $articlePriceArray), "DESCRIPTION" => "");
@@ -266,6 +266,8 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
                     $arArticles[] = array("VALUE" => $articlePrice, "DESCRIPTION" => "");
                 }
             }
+
+            error_log(print_r($arArticles, true), 3, $current['log']);
 
             if (CIBlockElement::SetPropertyValueCode($PRODUCT_ID, 'article_price', $arArticles)) {
                 echo "Article price updated\n";
@@ -325,7 +327,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
             $arArticles = array();
             foreach ($articlePrices as $articlePrice) {
                 $articlePriceArray = explode(' | ', $articlePrice);
-                error_log("{$articul} == {$articlePriceArray[0]} || {$gtin} == {$articlePriceArray[0]} => ".print_r($articul == $articlePriceArray[0] || $gtin == $articlePriceArray[0], true)."\n",3,$current['log']);
+//                error_log("{$articul} == {$articlePriceArray[0]} || {$gtin} == {$articlePriceArray[0]} => ".print_r($articul == $articlePriceArray[0] || $gtin == $articlePriceArray[0], true)."\n",3,$current['log']);
                 if ($articul == $articlePriceArray[0] || $gtin == $articlePriceArray[0]){
                     $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
                     $arArticles[] = array("VALUE" => implode(' | ', $articlePriceArray), "DESCRIPTION" => "");
@@ -333,6 +335,8 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
                     $arArticles[] = array("VALUE" => $articlePrice, "DESCRIPTION" => "");
                 }
             }
+
+            error_log(print_r($arArticles, true), 3, $current['log']);
 
             if (CIBlockElement::SetPropertyValueCode($PRODUCT_ID, 'article_price', $arArticles)) {
                 echo "Article price updated\n";
