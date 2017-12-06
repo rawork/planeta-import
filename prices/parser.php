@@ -12,6 +12,7 @@ $siteFolder = __DIR__ . '/../..';
 
 $_SERVER["DOCUMENT_ROOT"] = $siteFolder;
 $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
+
 define("NO_KEEP_STATISTIC", true);
 define("NOT_CHECK_PERMISSIONS", true);
 define("LANG", "s1");
@@ -89,6 +90,8 @@ if (file_exists(CURRENT_JSON)) {
 	$j = 2;
 	error_log("Start parse file $file at $current[started]\n", 3, $current['log']);
 }
+
+error_log('')
 
 echo "$current[file] - $current[position] - $current[started] - start\n";
 
@@ -253,6 +256,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
             // Обновляем PROPERTY_article_price
             $arArticles = array();
             foreach ($articlePrices as $articlePrice) {
+                error_log($arFields['PROPERTY_ARTICLE_PRICE_VALUE'], 3, $current['log']);
                 if ($arFields['PROPERTY_ARTICLE_PRICE_VALUE'] == $articlePrice){
                     $articlePriceArray = explode(' | ', $articlePrice);
                     $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
@@ -351,7 +355,7 @@ CIBlock::clearIblockTagCache(IBLOCK_ID);
 
 if ($fileRows <= $current['position'] ) {
 
-    $reportLink = "http://planeta27.ru" . str_replace($siteFolder, '', $current['report']);
+    $reportLink = "http://planeta27.ru" . str_replace($DOCUMENT_ROOT, '', $current['report']);
 
     rename($current['file'], $current['file'].'.done');
     unlink(CURRENT_JSON);
