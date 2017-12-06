@@ -269,14 +269,19 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 
             error_log(print_r($arArticles, true), 3, $current['log']);
 
-            if (CIBlockElement::SetPropertyValueCode($PRODUCT_ID, 'article_price', $arArticles)) {
-                echo "Article price updated\n";
-            } else {
-                echo "Article price not updated cause SetPropertyValueCode returns false\n";
+            CIBlockElement::SetPropertyValuesEx($PRODUCT_ID, IBLOCK_ID, array('article_price' => $arArticles));
+            echo "Article price updated\n";
+            $status = $report->getActiveSheet()->getCell('E'.$j)->getValue();
+            $report->getActiveSheet()->setCellValue('E'.$j, $status.', SetPropertyValueCode:Не обновлено');
 
-                $status = $report->getActiveSheet()->getCell('E'.$j)->getValue();
-                $report->getActiveSheet()->setCellValue('E'.$j, $status.', SetPropertyValueCode:Не обновлено');
-            }
+//            if (CIBlockElement::SetPropertyValueCode($PRODUCT_ID, 'article_price', $arArticles)) {
+//                echo "Article price updated\n";
+//            } else {
+//                echo "Article price not updated cause SetPropertyValueCode returns false\n";
+//
+//                $status = $report->getActiveSheet()->getCell('E'.$j)->getValue();
+//                $report->getActiveSheet()->setCellValue('E'.$j, $status.', SetPropertyValueCode:Не обновлено');
+//            }
 
         }
 	} else {
@@ -338,15 +343,19 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 
             error_log(print_r($arArticles, true), 3, $current['log']);
 
-            if (CIBlockElement::SetPropertyValueCode($PRODUCT_ID, 'article_price', $arArticles)) {
-                echo "Article price updated\n";
+            CIBlockElement::SetPropertyValuesEx($PRODUCT_ID, IBLOCK_ID, array('article_price' => $arArticles));
+            echo "Article price updated\n";
+            $report->getActiveSheet()->setCellValue('E'.$j, 'Обновлено по доп артикулу');
 
-                $report->getActiveSheet()->setCellValue('E'.$j, 'Обновлено по доп артикулу');
-            } else {
-                echo "Article price not updated cause SetPropertyValueCode returns false\n";
-
-                $report->getActiveSheet()->setCellValue('E'.$j, 'SetPropertyValueCode:Не обновлено');
-            }
+//            if (CIBlockElement::SetPropertyValueCode($PRODUCT_ID, 'article_price', $arArticles)) {
+//                echo "Article price updated\n";
+//
+//                $report->getActiveSheet()->setCellValue('E'.$j, 'Обновлено по доп артикулу');
+//            } else {
+//                echo "Article price not updated cause SetPropertyValueCode returns false\n";
+//
+//                $report->getActiveSheet()->setCellValue('E'.$j, 'SetPropertyValueCode:Не обновлено');
+//            }
 
         } else {
             error_log("Element $articul $gtin not found\n", 3, $current['log']);
