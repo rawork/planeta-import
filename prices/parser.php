@@ -257,6 +257,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
             foreach ($articlePrices as $articlePrice) {
                 $curArticlePriceArray = explode(' | ', $arFields['PROPERTY_ARTICLE_PRICE_VALUE']);
                 $articlePriceArray = explode(' | ', $articlePrice);
+                error_log($curArticlePriceArray[0].' = '.$articlePriceArray[0]."\n", 3, $current['log']);
                 if ($curArticlePriceArray[0] == $articlePriceArray[0]){
                     $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
                     $arArticles[] = array("VALUE" => implode(' | ', $articlePriceArray), "DESCRIPTION" => "");
@@ -324,6 +325,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
             foreach ($articlePrices as $articlePrice) {
                 $curArticlePriceArray = explode(' | ', $arFields['PROPERTY_ARTICLE_PRICE_VALUE']);
                 $articlePriceArray = explode(' | ', $articlePrice);
+                error_log($curArticlePriceArray[0].' = '.$articlePriceArray[0]."\n", 3, $current['log']);
                 if ($curArticlePriceArray[0] == $articlePriceArray[0]){
                     $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
                     $arArticles[] = array("VALUE" => implode(' | ', $articlePriceArray), "DESCRIPTION" => "");
