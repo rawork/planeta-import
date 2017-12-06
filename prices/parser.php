@@ -108,8 +108,6 @@ if ($fileRows <= $lastPosition) {
 echo "Total rows $fileRows\n";
 error_log("Total rows $fileRows\n", 3, $current['log']);
 
-CIBlock::clearIblockTagCache(IBLOCK_ID);
-
 for ($i = $current['position']; $i <= $lastPosition; $i++) {
 	echo "current row $i : ";
 	$brand = trim($pricelist->getActiveSheet()->getCell('A'.$i)->getValue());
@@ -263,15 +261,15 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
                 //error_log("{$articul} == {$articlePriceArray[0]} || {$gtin} == {$articlePriceArray[0]} => ".print_r($articul == $articlePriceArray[0] || $gtin == $articlePriceArray[0], true)."\n",3,$current['log']);
                 if ($articul == $articlePriceArray[0] || $gtin == $articlePriceArray[0]){
                     $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
-                    $arArticles[] = array("VALUE" => implode(' | ', $articlePriceArray), "DESCRIPTION" => "");
+                    $arArticles[] = array("VALUE" => implode(' | ', $articlePriceArray));
                 } else {
-                    $arArticles[] = array("VALUE" => $articlePrice, "DESCRIPTION" => "");
+                    $arArticles[] = array("VALUE" => $articlePrice);
                 }
             }
 
             error_log(print_r($arArticles, true), 3, $current['log']);
 
-            CIBlockElement::SetPropertyValuesEx($PRODUCT_ID, IBLOCK_ID, array('article_price' => $arArticles));
+            CIBlockElement::SetPropertyValuesEx($PRODUCT_ID, false, array("article_price" => $arArticles));
             echo "Article price updated\n";
         }
 	} else {
@@ -325,15 +323,15 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 //                error_log("{$articul} == {$articlePriceArray[0]} || {$gtin} == {$articlePriceArray[0]} => ".print_r($articul == $articlePriceArray[0] || $gtin == $articlePriceArray[0], true)."\n",3,$current['log']);
                 if ($articul == $articlePriceArray[0] || $gtin == $articlePriceArray[0]){
                     $articlePriceArray[2] = CCurrencyRates::ConvertCurrency($price, $currency, "RUB");
-                    $arArticles[] = array("VALUE" => implode(' | ', $articlePriceArray), "DESCRIPTION" => "");
+                    $arArticles[] = array("VALUE" => implode(' | ', $articlePriceArray));
                 } else {
-                    $arArticles[] = array("VALUE" => $articlePrice, "DESCRIPTION" => "");
+                    $arArticles[] = array("VALUE" => $articlePrice);
                 }
             }
 
             error_log(print_r($arArticles, true), 3, $current['log']);
 
-            CIBlockElement::SetPropertyValuesEx($PRODUCT_ID, IBLOCK_ID, array('article_price' => $arArticles));
+            CIBlockElement::SetPropertyValuesEx($PRODUCT_ID, false, array("article_price" => $arArticles));
             echo "Article price updated\n";
             $report->getActiveSheet()->setCellValue('E'.$j, 'Обновлено по доп артикулу');
         } else {
