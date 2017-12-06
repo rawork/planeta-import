@@ -188,7 +188,6 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
     $report->getActiveSheet()->setCellValue('D'.$j, $price);
 
 	if ($ob = $res->GetNextElement()) {
-        CIBlock::clearIblockTagCache(IBLOCK_ID);
 		$arFields = $ob->GetFields();
 		error_log("Element $articul $gtin found\n", 3, $current['log']);
 		echo "Element $articul $gtin found - ";
@@ -241,7 +240,6 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 
         // есть такой товар
         if ($ob = $res->GetNextElement()) {
-            CIBlock::clearIblockTagCache(IBLOCK_ID);
             $arFields = $ob->GetFields();
 
             error_log("Element $articul $gtin found by article_price\n", 3, $current['log']);
@@ -304,7 +302,6 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
         $res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>5), $arSelect);
 
         if ($ob = $res->GetNextElement()) {
-            CIBlock::clearIblockTagCache(IBLOCK_ID);
             $arFields = $ob->GetFields();
 
             error_log("Element $articul $gtin found by article_price\n", 3, $current['log']);
@@ -344,10 +341,7 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 
             $report->getActiveSheet()->setCellValue('E'.$j, 'Товар не найден');
         }
-
 	}
-
-    CIBlock::clearIblockTagCache(IBLOCK_ID);
 
 	$current['position']++;
 	$j++;
@@ -356,6 +350,8 @@ for ($i = $current['position']; $i <= $lastPosition; $i++) {
 
 $objWriter = new \PHPExcel_Writer_Excel2007($report);
 $objWriter->save($current['report']);
+
+CIBlock::clearIblockTagCache(IBLOCK_ID);
 
 if ($fileRows <= $current['position'] ) {
 
